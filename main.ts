@@ -1,3 +1,6 @@
+namespace SpriteKind {
+    export const Squirrel = SpriteKind.create()
+}
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     Arrow.throwDart()
     pause(1500)
@@ -29,8 +32,69 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         Arrow.setTrace()
     }
 })
+function squirrel (gold: boolean, score: number) {
+    Alive = true
+    if (gold) {
+        squirrelSprite = sprites.create(img`
+            5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 . . . . . . . . . . . . . . 5 
+            5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 
+            `, SpriteKind.Squirrel)
+    } else {
+        squirrelSprite = sprites.create(img`
+            f f f f f f f f f f f f f f f f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f . . . . . . . . . . . . . . f 
+            f f f f f f f f f f f f f f f f 
+            `, SpriteKind.Squirrel)
+    }
+    while (Alive) {
+        squirrelSprite.setVelocity(0, randint(20, 75))
+        pause(500)
+    }
+    return score
+}
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Squirrel, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    kindOfSquirrel = randint(1, 10)
+    if (kindOfSquirrel == 10) {
+        squirrel(true, 1)
+        info.changeScoreBy(5000)
+    } else {
+        squirrel(false, 1)
+    }
+})
+let kindOfSquirrel = 0
+let squirrelSprite: Sprite = null
+let Alive = false
 let Arrow: Dart = null
 let ArrowThrown = false
+let name = game.askForString("What is your name?")
 ArrowThrown = true
 let mySprite = sprites.create(img`
     ................................
@@ -173,3 +237,8 @@ scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     `)
+game.showLongText("ok, " + name + " shoot the squirrels to gain points. Good luck!", DialogLayout.Bottom)
+for (let index = 0; index < 3; index++) {
+    pause(100)
+    squirrel(false, 1)
+}
